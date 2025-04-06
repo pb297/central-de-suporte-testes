@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central de Suporte</title>
+    <link rel="icon" type="image/png" href="./Arquivos/Imagens/logo.png">
+    <link rel="stylesheet" href="./CSS/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Modal -->
+    <div id="customModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalText">
+                <!-- Conteúdo dinâmico será inserido aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cabeçalho -->
+    <header class="header">
+        <div class="header-content">
+            <img src="../Arquivos/Imagens/logo.png" alt="logo" class="logo">
+            <div class="titulo-container">
+                <h1 class="titulo">Central de Suporte <span class="ambiente-testes">Versão de testes</span></h1>
+                <h2 class="subtitulo">Gerência de Relacionamento e Comercial | Postalis - Instituto de Previdência Complementar</h2>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu Superior -->
+    <div class="menu-superior">
+        <a href="./Páginas/Outros/login-redesign.html" class="login-button">
+            Acessar dashboard
+        </a>
+    </div>
+
+    <!-- Barra de Pesquisa -->
+    <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="Pesquisar...">
+        <div id="searchResults" class="search-results"></div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Coluna Esquerda -->
+        <section class="sidebar left-sidebar">
+            <div class="sidebar-section">
+                <h3 class="section-title">Como utilizar a Central de Suporte</h3>
+                <div class="video-container">
+                    <video controls poster="./Arquivos/Imagens/cap2.png">
+                        <source src="" type="video/mp4">
+                        Seu navegador não suporta vídeos.
+                    </video>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3 class="section-title">Documentos Frequentes</h3>
+                <div class="documentos">
+                    <a href="./Arquivos/Documentos/Formulário de Reingresso.docx" class="doc-botao" download>Formulário de Reingresso</a>
+                    <a href="./Arquivos/Documentos/FORMULARIO DE CANCELAMENTO - ICATU (2).docx" class="doc-botao" download>Cancelamento - Seguro de Vida</a>
+                    <a href="./Arquivos/Documentos/Autorizacao_de_debito_em_conta_corrente_Seguro_Vida (1).docx" class="doc-botao" download>Débito em conta - Seguro de Vida</a>
+                    <a href="./Arquivos/Documentos/FORMULARIO_MANUTENCAO_CONTRIBUICAO_5 (1).doc" class="doc-botao" download>Manutenção de contribuição - CAD</a>
+                    <a href="./Arquivos/Documentos/FORMULARIO_SUSPENSÃO_CONTRIBUIÇÃO_set2019.doc" class="doc-botao" download>Suspensão de contribuição - CAD</a>
+                    <a href="./Arquivos/Documentos/Formulario_dependentes_IR.doc" class="doc-botao" download>Dependente para IR - GBE</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Coluna Central -->
+        <section class="central-column">
+            <h2 class="services-title">Base de conhecimento</h2>
+            <div class="botoes-centrais" id="botoesCentrais">
+                <a href="./Páginas/emprestimo.html" class="botao" data-search="empréstimo">Empréstimo</a>
+                <a href="./Páginas/aposentadoria.html" class="botao" data-search="aposentadoria">Aposentadoria</a>
+                <a href="./Páginas/bad.html" class="botao" data-search="auxílio doença">Auxílio Doença</a>
+                <a href="./Páginas/institutos.html" class="botao" data-search="institutos">Institutos</a>
+                <a href="./Páginas/postalis-online.html" class="botao" data-search="postalis online">Postalis Online</a>
+                <a href="./Páginas/base-de-conhecimento.html" class="botao" data-search="arquivos grc">Base de Conhecimento</a>
+                <a href="./Páginas/pensao-peculio.html" class="botao" data-search="pensão e pecúlio">Pensão e Pecúlio</a>
+                <a href="./Páginas/seguro-de-vida.html" class="botao" data-search="seguro de vida">Seguro de Vida</a>
+                <a href="./Páginas/imposto-de-renda.html" class="botao" data-search="imposto de renda">Imposto de Renda</a>
+                <a href="./Páginas/outros-assuntos.html" class="botao" data-search="outros assuntos">Outros Assuntos</a>
+            </div>
+        </section>
+
+        <!-- Coluna Direita -->
+        <section class="sidebar right-sidebar">
+            <div class="sidebar-section">
+                <h3 class="section-title">Links Úteis</h3>
+                <div class="links-uteis">
+                    <a href="https://meet.google.com/hrd-jziu-fza" class="link-item">Teams - Suporte</a>
+                    <a href="https://meet.google.com/iuh-hrbg-vmf" class="link-item">Teams - Empréstimo</a>
+                    <a href="https://postalis.bitrix24.com/stream/" class="link-item">Bitrix</a>
+                    <a href="http://intranet.postalis.org.br/" class="link-item">Intranet</a>
+                    <a href="https://login.lg.com.br/login/postalis" class="link-item">RH Digital</a>
+                    <a href="https://postalis.chat.comunix.tech/" class="link-item">Comunix Phone</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Rodapé -->
+
+    <footer>
+        <div class="footer-content">
+            © 2025 POSTALIS - Instituto de Previdência Complementar
+        </div>
+    </footer>
+
+    <!-- Botão do Chatbot -->
+    <button class="chatbot-btn" id="chatbotButton">
+        *
+    </button>
+
+    <!-- Container do Chatbot -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <iframe 
+            src="https://typebot.co/stella-grc" 
+            class="chatbot-iframe"
+            allow="microphone; camera"
+        ></iframe>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./JS/main.js"></script>
+</body>
+</html>

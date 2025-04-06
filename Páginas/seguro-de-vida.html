@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central de Suporte</title>
+    <link rel="icon" type="image/png" href="../Arquivos/Imagens/logo.png">
+    <link rel="stylesheet" href="../CSS/paginas.css">
+</head>
+<body>
+    <header class="header">
+        <div class="titulo-container">
+            <h1 class="titulo">Seguro de vida</h1>
+            <p class="subtitulo">Orientações sobre o seguro de vida</p>
+        </div>
+        <a href="../index.html" class="btn-voltar">Voltar</a>
+    </header>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Pesquisar...">
+    </div>
+
+    <main class="main-content">
+        <div class="grid-artigos" id="artigosContainer">
+            <a href="" class="artigo-card" data-tags="GBE, demanda, beneficio">
+                <h3 class="artigo-titulo">##</h3>
+            </a>
+
+            <a href="" class="artigo-card" data-tags="contribuição, contribuicao, percentual">
+                <h3 class="artigo-titulo">##</h3>
+            </a>
+        </div>
+
+        <div class="roteiros-section">
+            <h2>Roteiros de atendimento</h2>
+            <a href="" class="item-roteiro">
+                Nenhuma informação disponível no momento
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        © 2025 POSTALIS - Instituto de Previdência Complementar
+    </footer>
+
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const articles = document.querySelectorAll('.artigo-card');
+            
+            articles.forEach(article => {
+                const title = article.querySelector('.artigo-titulo').textContent.toLowerCase();
+                const tags = article.dataset.tags ? article.dataset.tags.toLowerCase() : '';
+                               
+                article.style.display = (title.includes(searchTerm) || tags.includes(searchTerm)) 
+                    ? 'block' 
+                    : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

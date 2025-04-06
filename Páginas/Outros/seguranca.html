@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segurança das Informações</title>
+    <link rel="icon" type="image/png" href="../Arquivos/Imagens/logo.png">
+    <link rel="stylesheet" href="../../CSS/paginas.css">
+</head>
+<body>
+    <header class="header">
+        <div class="titulo-container">
+            <h1 class="titulo">Segurança das Informações</h1>
+            <p class="subtitulo">Como protegemos seus dados e garantimos sua privacidade</p>
+        </div>
+        <a href="./login-redesign.html" class="btn-voltar">Voltar</a>
+    </header>
+
+    <main class="main-content">
+        <div class="roteiros-section">
+            <h2>Política de Segurança</h2>
+            
+            <div class="item-roteiro">
+                <h3>Autenticação Segura</h3>
+                <p>Nosso sistema utiliza o Firebase Authentication para gerenciar todos os processos de login. Isso significa que suas credenciais são protegidas pelos mais elevados padrões de segurança da Google.</p>
+            </div>
+            
+            <div class="item-roteiro">
+                <h3>Proteção de Senha</h3>
+                <p>Os administradores do sistema <strong>não têm acesso às suas senhas</strong>. O Firebase armazena apenas versões criptografadas das senhas, impossibilitando que qualquer pessoa, inclusive nossa equipe, visualize sua senha original.</p>
+            </div>
+            
+            <div class="item-roteiro">
+                <h3>Privacidade do Dashboard</h3>
+                <p>As informações salvas no seu dashboard pessoal são protegidas e <strong>não são acessíveis aos administradores</strong> do sistema. Seus dados pessoais e configurações permanecem privados e seguros.</p>
+            </div>
+            
+            <div class="item-roteiro">
+                <h3>Criptografia de Dados</h3>
+                <p>Todos os dados trafegados entre seu navegador e nossos servidores são protegidos com criptografia de ponta a ponta, garantindo que suas informações permaneçam protegidas durante a transmissão.</p>
+            </div>
+            
+            <div class="item-roteiro">
+                <h3>Controle de Acesso</h3>
+                <p>Implementamos rígidos controles de acesso baseados em funções para garantir que apenas usuários autorizados possam acessar determinadas áreas e funcionalidades do sistema.</p>
+            </div>
+            
+            <div class="item-roteiro">
+                <h3>Monitoramento Contínuo</h3>
+                <p>Nossos sistemas são continuamente monitorados para detectar e prevenir tentativas de acesso não autorizado, garantindo a integridade e confidencialidade dos seus dados.</p>
+            </div>
+        </div>
+        
+        <div class="roteiros-section">
+            <h2>Perguntas Frequentes sobre Segurança</h2>
+            
+            <div class="item-roteiro">
+                <h3>Como recupero minha senha?</h3>
+                <p>Caso esqueça sua senha, você pode solicitar uma redefinição através da opção "Esqueci minha senha" na tela de login. Um e-mail com instruções será enviado para o endereço cadastrado.</p>
+            </div>
+            
+            <div class="item-roteiro">
+                <h3>Meus dados estão seguros?</h3>
+                <p>Sim! Utilizamos as melhores práticas de segurança e tecnologias de ponta para proteger suas informações. O Firebase proporciona um alto nível de segurança para autenticação e armazenamento de dados.</p>
+            </div>
+            
+            <div class="item-roteiro">
+                <h3>Quem pode ver minhas informações?</h3>
+                <p>Apenas você tem acesso às suas informações pessoais. Os administradores do sistema não têm acesso ao conteúdo do seu dashboard nem às suas credenciais de login.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        © 2025 POSTALIS - Instituto de Previdência Complementar
+    </footer>
+
+    <script>
+        // Adicionar comportamento interativo se necessário
+        document.querySelectorAll('.item-roteiro').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('expanded');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN - Central de Suporte</title>
+    <link rel="stylesheet" href="../../CSS/login.css">
+    <link rel="icon" type="image/png" href="./Arquivos/Imagens/logo.png">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="titulo-container">
+            <h1 class="titulo">Painel de acesso</h1>
+            <h2 class="subtitulo">Realizar login para acessar as demais funcionalidades do sistema</h2>
+        </div>
+    </header>
+
+    <div class="login-container">
+        <h2>Realizar login</h2>
+        
+        <div id="alertBox" class="alert"></div>
+        
+        <!-- Toggle buttons -->
+        <div class="toggle-container">
+            <button id="loginToggle" class="toggle-btn active">Entrar</button>
+            <button id="registerToggle" class="toggle-btn">Registrar</button>
+            <button id="resetToggle" class="toggle-btn">Resetar senha</button>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <span class="input-icon">✉️</span>
+                <input type="email" id="email" class="login-input" placeholder="seu.email@postalis.org.br" required autocomplete="off">
+            </div>
+            
+            <div class="input-group">
+                <label for="codigo">Senha</label>
+                <span class="input-icon">🔐</span>
+                <input type="password" id="codigo" class="login-input" placeholder="Sua senha de acesso" required>
+            </div>
+            
+            <button type="submit" class="login-btn">Acessar</button>
+            
+            <div id="loading" class="loading">
+                <span class="loading-spinner"></span> Verificando credenciais...
+            </div>
+        </form>
+        
+        <!-- Register Form (initially hidden) -->
+        <form id="registerForm" style="display: none;">
+            <div class="input-group">
+                <label for="regNome">Nome Completo</label>
+                <span class="input-icon">👤</span>
+                <input type="text" id="regNome" class="login-input" placeholder="Seu nome completo" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="regEmail">E-mail</label>
+                <span class="input-icon">✉️</span>
+                <input type="email" id="regEmail" class="login-input" placeholder="seu.email@postalis.org.br" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="regSenha">Senha</label>
+                <span class="input-icon">🔐</span>
+                <input type="password" id="regSenha" class="login-input" placeholder="Mínimo 6 caracteres" required minlength="6">
+            </div>
+            
+            <button type="submit" class="login-btn">Registrar</button>
+            
+            <div id="regLoading" class="loading" style="display: none;">
+                <span class="loading-spinner"></span> Processando registro...
+            </div>
+        </form>
+
+        <!-- Reset Form (initially hidden) -->
+        <form id="resetForm" style="display: none;">
+            <div class="input-group">
+                <label for="resetEmail">E-mail</label>
+                <span class="input-icon">✉️</span>
+                <input type="email" id="resetEmail" class="login-input" placeholder="seu.email@postalis.org.br" required>
+            </div>
+            
+            <button type="submit" class="login-btn">Enviar link de redefinição</button>
+        </form>
+        
+        <div class="login-footer">
+            <span>Acesso restrito</span>
+            <a href="./seguranca.html">Segurança de dados</a>
+        </div>
+        
+        <a href="../../index.html" class="back-link">← Voltar para a página inicial</a>
+    </div>
+
+    <footer>
+        © 2025 POSTALIS - Instituto de Previdência Complementar
+    </footer>
+
+    <script>
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyC3T1DP8L7Rs7167YEiKppY3zS0QhWKePg",
+    authDomain: "central-de-suporte-4ceab.firebaseapp.com",
+    projectId: "central-de-suporte-4ceab",
+    storageBucket: "central-de-suporte-4ceab.firebasestorage.app",
+    messagingSenderId: "463050911746",
+    appId: "1:463050911746:web:d892319198cdd183c5b71b"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// Admin configuration
+const USER_TYPES = {
+    ADMIN: 'admin',
+    COMMON: 'common'
+};
+
+// Lista de usuários administradores
+const adminUsers = [
+    {
+        email: "gabriel.talles@postalis.org.br",
+        nome: "Gabriel Talles de Magalhães",
+        type: USER_TYPES.ADMIN
+    },
+    {
+        email: "karina.dantas@postalis.org.br",
+        nome: "Karina Penha Dantas",
+        type: USER_TYPES.ADMIN
+    },
+    {
+        email: "joao.ataides@postalis.org.br",
+        nome: "João Spindola Ataides",
+        type: USER_TYPES.ADMIN
+    }
+];
+
+// DOM Elements
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const resetForm = document.getElementById('resetForm');
+const loginToggle = document.getElementById('loginToggle');
+const registerToggle = document.getElementById('registerToggle');
+const resetToggle = document.getElementById('resetToggle');
+
+// Toggle form visibility
+function showForm(formId) {
+    [loginForm, registerForm, resetForm].forEach(form => {
+        form.style.display = form.id === formId ? 'block' : 'none';
+    });
+    [loginToggle, registerToggle, resetToggle].forEach(toggle => {
+        toggle.classList.toggle('active', toggle.id === formId + 'Toggle');
+    });
+}
+
+// Event listeners for form toggles
+loginToggle.addEventListener('click', () => showForm('loginForm'));
+registerToggle.addEventListener('click', () => showForm('registerForm'));
+resetToggle.addEventListener('click', () => showForm('resetForm'));
+
+// Login form handler
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('codigo').value;
+    
+    if (!email || !password) {
+        showAlert('Preencha todos os campos', 'error');
+        return;
+    }
+    
+    if (!isValidEmail(email)) {
+        showAlert('Somente são permitidos e-mails com domínio @postalis', 'error');
+        return;
+    }
+    
+    showLoading(true);
+    
+    try {
+        // Login com Firebase
+        const credential = await auth.signInWithEmailAndPassword(email, password);
+        const user = credential.user;
+        
+        if (user) {
+            // Buscar dados do perfil no Firestore
+            const userDoc = await db.collection('profiles').doc(user.uid).get();
+            let userData = {
+                uid: user.uid,
+                email: user.email,
+                nome: user.email.split('@')[0],
+                type: USER_TYPES.COMMON
+            };
+            
+            // Se o documento do usuário existe no Firestore
+            if (userDoc.exists) {
+                const profileData = userDoc.data();
+                userData.nome = profileData.nome || userData.nome;
+            }
+            
+            // Verificar se é administrador
+            const isAdmin = adminUsers.some(admin => admin.email === email);
+            if (isAdmin) {
+                userData.type = USER_TYPES.ADMIN;
+            }
+            
+            // Obter token de autenticação
+            const idToken = await user.getIdToken();
+            userData.token = idToken;
+            
+            handleSuccessfulLogin(userData);
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showAlert(getErrorMessage(error), 'error');
+        showLoading(false);
+    }
+});
+
+// Register form handler
+registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regSenha').value;
+    const nome = document.getElementById('regNome').value.trim();
+    
+    if (!email || !password || !nome) {
+        showAlert('Preencha todos os campos', 'error');
+        return;
+    }
+    
+    if (!isValidEmail(email)) {
+        showAlert('Somente são permitidos e-mails com domínio @postalis', 'error');
+        return;
+    }
+
+    if (password.length < 6) {
+        showAlert('A senha deve ter pelo menos 6 caracteres', 'error');
+        return;
+    }
+    
+    document.getElementById('regLoading').style.display = 'block';
+    
+    try {
+        // Registro com Firebase
+        const credential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = credential.user;
+        
+        // Enviar email de verificação
+        await user.sendEmailVerification({
+            url: window.location.origin + '/login-redesign.html'
+        });
+        
+        // Criar perfil no Firestore
+        await db.collection('profiles').doc(user.uid).set({
+            id: user.uid,
+            nome: nome,
+            email: email,
+            user_type: USER_TYPES.COMMON,
+            created_at: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Atualizar nome de exibição no perfil do usuário
+        await user.updateProfile({
+            displayName: nome
+        });
+        
+        showAlert('Registro realizado. Acesse o link encaminhado por e-mail para validar', 'success');
+        registerForm.reset();
+        
+        setTimeout(() => showForm('loginForm'), 3000);
+    } catch (error) {
+        console.error('Registration error:', error);
+        showAlert(getRegistrationErrorMessage(error), 'error');
+    } finally {
+        document.getElementById('regLoading').style.display = 'none';
+    }
+});
+
+// Password reset handler
+resetForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('resetEmail').value.trim();
+    
+    if (!isValidEmail(email)) {
+        showAlert('Use um email corporativo válido', 'error');
+        return;
+    }
+    
+    showLoading(true);
+    
+    try {
+        // Enviar email de recuperação de senha com Firebase
+        await auth.sendPasswordResetEmail(email, {
+            url: window.location.origin + '/login-redesign.html'
+        });
+
+        showAlert('Link de redefinição de senha enviado para seu email', 'success');
+        resetForm.reset();
+        setTimeout(() => showForm('loginForm'), 3000);
+    } catch (error) {
+        console.error('Password reset error:', error);
+        showAlert(getErrorMessage(error), 'error');
+    } finally {
+        showLoading(false);
+    }
+});
+
+// Helper functions
+function isValidEmail(email) {
+    return email.endsWith('@postalis.org.br') || email.endsWith('@postalis.com.br');
+}
+
+function handleSuccessfulLogin(userData) {
+    const authData = {
+        uid: userData.uid,
+        email: userData.email,
+        nome: userData.nome || userData.email.split('@')[0],
+        type: userData.type || USER_TYPES.COMMON,
+        token: userData.token,
+        timestamp: new Date().getTime(),
+        expiresIn: 3600000 // 1 hora
+    };
+
+    sessionStorage.setItem('userAuth', JSON.stringify(authData));
+    showAlert('Login realizado com sucesso!', 'success');
+    
+    setTimeout(() => {
+        window.location.href = './user.dashboard.html';
+    }, 1500);
+}
+
+function showAlert(message, type) {
+    const alertBox = document.getElementById('alertBox');
+    alertBox.innerHTML = message.replace(/\n/g, '<br>');
+    alertBox.className = `alert alert-${type}`;
+    alertBox.style.display = 'block';
+    
+    setTimeout(() => {
+        alertBox.style.display = 'none';
+    }, type === 'success' ? 8000 : 5000);
+}
+
+function showLoading(show) {
+    document.getElementById('loading').style.display = show ? 'block' : 'none';
+    document.querySelector('#loginForm .login-btn').disabled = show;
+    document.querySelector('#loginForm .login-btn').style.opacity = show ? '0.7' : '1';
+}
+
+function getErrorMessage(error) {
+    // Mapeamento de erros do Firebase para mensagens amigáveis
+    const errorMap = {
+        'auth/invalid-credential': 'Credenciais inválidas',
+        'auth/user-not-found': 'Usuário não encontrado',
+        'auth/wrong-password': 'Senha incorreta',
+        'auth/email-already-in-use': 'Este e-mail já está em uso',
+        'auth/invalid-email': 'E-mail inválido',
+        'auth/weak-password': 'A senha é muito fraca',
+        'auth/too-many-requests': 'Foram realizadas muitas tentativas de login. Tente novamente mais tarde',
+        'auth/user-disabled': 'Usuário desativado',
+        'auth/operation-not-allowed': 'Operação não permitida',
+        'auth/account-exists-with-different-credential': 'Já existe uma conta com esse e-mail. Tente fazer login com outro método',
+    };
+    
+    const errorCode = error.code || '';
+    return errorMap[errorCode] || error.message || 'Erro desconhecido. Tente novamente.';
+}
+
+function getRegistrationErrorMessage(error) {
+    // Já usando o mesmo mapeamento para erros de registro
+    return getErrorMessage(error);
+}
+
+// Verificar sessão ao carregar a página
+document.addEventListener('DOMContentLoaded', () => {
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            try {
+                // Verificar se o email está verificado
+                if (!user.emailVerified) {
+                    showForm('loginForm');
+                    return;
+                }
+                
+                // Buscar dados do perfil no Firestore
+                const userDoc = await db.collection('profiles').doc(user.uid).get();
+                let userData = {
+                    uid: user.uid,
+                    email: user.email,
+                    nome: user.displayName || user.email.split('@')[0],
+                    type: USER_TYPES.COMMON
+                };
+                
+                // Se o documento do usuário existe no Firestore
+                if (userDoc.exists) {
+                    const profileData = userDoc.data();
+                    userData.nome = profileData.nome || userData.nome;
+                }
+                
+                // Verificar se é administrador
+                const isAdmin = adminUsers.some(admin => admin.email === user.email);
+                if (isAdmin) {
+                    userData.type = USER_TYPES.ADMIN;
+                }
+                
+                // Obter token de autenticação
+                const idToken = await user.getIdToken();
+                userData.token = idToken;
+                
+                handleSuccessfulLogin(userData);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                showForm('loginForm');
+            }
+        } else {
+            // Show login form by default
+            showForm('loginForm');
+        }
+    });
+});
+
+// Function to logout (can be called from other pages)
+async function logout() {
+    try {
+        sessionStorage.removeItem('userAuth');
+        await auth.signOut();
+        window.location.href = './login-redesign.html';
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+}
+    </script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+/* Base Styles */
+:root {
+    --primary-color: #083486;
+    --secondary-color: #234e6e;
+    --accent-color: #e6f0fa;
+    --text-color: #333333;
+    --light-text: #666666;
+    --light-bg: #f5f8fa;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --transition: all 0.25s ease;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+}
+
+/* Header */
+.dashboard-header {
+    background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('../Arquivos/Imagens/capa.png');
+    background-size: cover;
+    padding: 1rem 0;
+    box-shadow: var(--box-shadow);
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo {
+    width: 80px;
+    height: auto;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.titulo-container {
+    color: white;
+}
+
+.titulo {
+    font-size: 1.8rem;
+    font-weight: 300;
+}
+
+.versao-beta {
+    color: #ffcc00;
+    font-size: 0.7em;
+    background: rgba(255,0,0,0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: var(--transition);
+}
+
+.logout-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Main Content */
+.dashboard-main {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+/* Quick Access */
+.quick-access-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.quick-access-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.quick-access-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: var(--transition);
+    box-shadow: var(--box-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.quick-access-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.quick-access-card i {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2rem;
+}
+
+/* Calendar Section */
+.datetime-weather-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    justify-content: space-between;
+}
+
+.datetime {
+    font-size: 1.2rem;
+}
+
+.date {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.time {
+    color: var(--light-text);
+}
+
+.weather-widget {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--accent-color);
+    padding: 0.8rem 1.5rem;
+    border-radius: 2rem;
+}
+
+/* Calendar */
+.calendar-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.weekday {
+    text-align: center;
+    padding: 1rem;
+    background: var(--accent-color);
+    border-radius: 0.5rem;
+    font-weight: 600;
+}
+
+.calendar-day {
+    padding: 1rem;
+    text-align: center;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 0.5rem;
+    position: relative;
+}
+
+.calendar-day.today {
+    background: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.events-card, .notices-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.events-list, .notices-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.event-item, .notice-item {
+    background: var(--light-bg);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.notice-item {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-left: 4px solid #ccc;
+}
+
+.notice-item.high {
+    border-left-color: #dc3545;
+}
+
+.notice-item.medium {
+    border-left-color: #ffc107;
+}
+
+.notice-item.low {
+    border-left-color: #28a745;
+}
+
+.notice-date {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.notice-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.notice-content {
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.notice-item {
+    border-left-color: #ffcc00;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .dashboard-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-sidebar {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .quick-access-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .datetime-weather-card {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
