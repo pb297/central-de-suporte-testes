@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DASHBOARD</title>
-    <link rel="icon" type="image/png" href="./Arquivos/Imagens/logo.png">
+    <link rel="icon" type="image/png" href="../../Arquivos/Imagens/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../CSS/user.dashboard.css">
     
@@ -21,13 +21,13 @@
                 <img src="./Arquivos/Imagens/logo.png" alt="Logo Postalis" class="logo">
                 <div class="titulo-container">
                     <h1 class="titulo">Dashboard - Central de Suporte<span class="versao-beta">teste // dashboard</span></h1>
-                    <h2 class="subtitulo">####</h2>
+                    <h2 class="subtitulo" id="userType">####</h2>
                 </div>
             </div>
             <div class="user-actions">
                 <div class="user-info">
                     <i class="fas fa-user-circle"></i>
-                    <span id="userName">user.login</span>
+                    <span id="userName">Carregando...</span>
                 </div>
                 <button id="logoutBtn" class="logout-btn" title="Sair">
                     <i class="fas fa-sign-out-alt"></i>
@@ -54,7 +54,7 @@
                     <i class="fas fa-folder-open"></i>
                     <span>Arquivos</span>
                 </a>
-                <a href="./acesso-restrito.html" class="quick-access-card">
+                <a href="./acesso-restrito.html" class="quick-access-card admin-only" style="display: none;">
                     <i class="fas fa-chart-bar"></i>
                     <span>Acesso restrito</span>
                 </a>
@@ -99,18 +99,73 @@
     <script>
         // Firebase Config
         const firebaseConfig = {
-            apiKey: "AIzaSyD4YxKISCBoT40DbnXYbaCGUN8OrMqdPFo",
-            authDomain: "central-de-suporte.firebaseapp.com",
-            projectId: "central-de-suporte",
-            storageBucket: "central-de-suporte.firebasestorage.app",
-            messagingSenderId: "165275848027",
-            appId: "1:165275848027:web:c2f9122e5e533f7e6cde7e"
+            apiKey: "AIzaSyC3T1DP8L7Rs7167YEiKppY3zS0QhWKePg",
+            authDomain: "central-de-suporte-4ceab.firebaseapp.com",
+            projectId: "central-de-suporte-4ceab",
+            storageBucket: "central-de-suporte-4ceab.firebasestorage.app",
+            messagingSenderId: "463050911746",
+            appId: "1:463050911746:web:d892319198cdd183c5b71b"
         };
 
         // Inicialização Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+
+        // User Types
+        const USER_TYPES = {
+            ADMIN: 'admin',
+            COMMON: 'common'
+        };
+
+        // Função para verificar e carregar dados do usuário
+        function checkUserAuth() {
+            // Primeiro, verificar se existe uma sessão armazenada
+            const userAuthString = sessionStorage.getItem('userAuth');
+            
+            if (!userAuthString) {
+                // Redirecionar para a página de login se não houver sessão
+                window.location.href = './login-redesign.html';
+                return;
+            }
+
+            try {
+                // Obter dados do usuário da sessão
+                const userData = JSON.parse(userAuthString);
+                
+                // Verificar se a sessão expirou
+                const now = new Date().getTime();
+                if (now > userData.timestamp + userData.expiresIn) {
+                    // Sessão expirada
+                    sessionStorage.removeItem('userAuth');
+                    window.location.href = './login-redesign.html';
+                    return;
+                }
+                
+                // Exibir nome do usuário
+                document.getElementById('userName').textContent = userData.nome || userData.email;
+                
+                // Atualizar subtítulo com o tipo de usuário
+                const userType = document.getElementById('userType');
+                userType.textContent = userData.type === USER_TYPES.ADMIN ? 'Tipo de usuário: administrador' : 'Tipo de usuário: comum';
+                
+                // Mostrar ou ocultar elementos com base no tipo de usuário
+                toggleAdminElements(userData.type === USER_TYPES.ADMIN);
+                
+                return userData;
+            } catch (error) {
+                console.error('Erro ao verificar autenticação:', error);
+                window.location.href = './login-redesign.html';
+            }
+        }
+
+        // Mostrar/ocultar elementos administrativos
+        function toggleAdminElements(isAdmin) {
+            const adminElements = document.querySelectorAll('.admin-only');
+            adminElements.forEach(el => {
+                el.style.display = isAdmin ? 'flex' : 'none';
+            });
+        }
 
         // Atualização de Data/Hora
         function updateDateTime() {
@@ -125,8 +180,6 @@
             document.getElementById('date').textContent = now.toLocaleDateString('pt-BR', dateOptions);
             document.getElementById('time').textContent = now.toLocaleTimeString('pt-BR');
         }
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
 
         // Weather API Implementation
         async function getWeather() {
@@ -190,11 +243,7 @@
             return iconMap[iconCode] || 'cloud';
         }
 
-        // Inicialização do clima
-        getWeather();
-        setInterval(getWeather, 300000);
-
-        // Update the loadEvents function
+        // Carregar eventos
         async function loadEvents() {
             try {
                 const response = await fetch('./Dados/eventos.json');
@@ -211,7 +260,7 @@
             }
         }
 
-        // Update the loadNotices function
+        // Carregar avisos
         async function loadNotices() {
             try {
                 const response = await fetch('./Dados/avisos.json');
@@ -227,7 +276,7 @@
             }
         }
 
-        // Update the updateNoticesList function to remove date filtering
+        // Atualizar lista de avisos
         function updateNoticesList(notices) {
             const noticesListDiv = document.getElementById('noticesList');
             
@@ -256,27 +305,22 @@
                 }).join('');
         }
 
-        // Check for events on a specific date
+        // Verificar eventos em uma data específica
         function checkForEvents(date, events) {
             if (!events) return false;
             
             const monthKey = date.toISOString().slice(0, 7);
             const dateStr = date.toISOString().slice(0, 10);
             
-            console.log('Checking date:', dateStr, 'in month:', monthKey);
-            console.log('Available events:', events[monthKey]);
-            
             return events[monthKey]?.some(event => event.date === dateStr) || false;
         }
 
-        // Update events list
+        // Atualizar lista de eventos
         function updateEventsList(events) {
             const now = new Date();
             const monthKey = now.toISOString().slice(0, 7);
             const monthEvents = events[monthKey] || [];
             const eventsListDiv = document.getElementById('eventsList');
-            
-            console.log('Atualizando eventos para:', monthKey, monthEvents);
             
             if (!monthEvents.length) {
                 eventsListDiv.innerHTML = '<p class="no-events">Não há nenhuma data importante cadastrada para este mês.</p>';
@@ -303,7 +347,7 @@
                 }).join('');
         }
 
-        // Update calendar generation to include events
+        // Gerar calendário
         async function generateCalendar(events) {
             const now = new Date();
             const calendarDiv = document.getElementById('calendar');
@@ -356,31 +400,56 @@
             updateEventsList(events);
         }
 
-        // Event Handling
-        /*
-        document.getElementById('addEventBtn').addEventListener('click', () => {
-            // Lógica de adição de eventos
-        });
-        */
+        // Função de logout
+        async function logout() {
+            try {
+                sessionStorage.removeItem('userAuth');
+                await auth.signOut();
+                window.location.href = './login-redesign.html';
+            } catch (error) {
+                console.error('Erro ao fazer logout:', error);
+                window.location.href = './login-redesign.html';
+            }
+        }
 
-        // Update the initialization code
+        // Inicialização da página
         document.addEventListener('DOMContentLoaded', async () => {
             try {
+                // Verificar autenticação do usuário
+                const userData = checkUserAuth();
+                if (!userData) return; // Vai redirecionar para login
+                
+                // Configurar botão de logout
+                document.getElementById('logoutBtn').addEventListener('click', logout);
+                
+                // Carregar eventos e avisos
                 const [events, notices] = await Promise.all([
                     loadEvents(),
                     loadNotices()
                 ]);
                 
+                // Inicializar interface
                 await generateCalendar(events);
                 updateNoticesList(notices);
                 updateDateTime();
+                setInterval(updateDateTime, 1000);
                 getWeather();
+                setInterval(getWeather, 300000);
+                
+                // Observar mudanças no status de autenticação
+                auth.onAuthStateChanged(user => {
+                    if (!user) {
+                        console.log('Usuário deslogado');
+                        sessionStorage.removeItem('userAuth');
+                        window.location.href = './login-redesign.html';
+                    }
+                });
             } catch (error) {
                 console.error('Erro na inicialização:', error);
+                alert('Ocorreu um erro ao carregar o dashboard. Você será redirecionado para a página de login.');
+                window.location.href = './login-redesign.html';
             }
         });
-
-        document.addEventListener('DOMContentLoaded', checkAdminAccess);
     </script>
 </body>
 </html>
