@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Treinamento - Central de Suporte</title>
+    <link rel="stylesheet" href="../../CSS/treinamentos-2.css">
+    <link rel="icon" type="image/png" href="../../Arquivos/Imagens/logo.png">
+</head>
+<body>
+    <header class="header">
+        <img src="../../Arquivos/Imagens/logo.png" alt="Logo Postalis" class="logo">
+        <div class="titulo-container">
+            <h1 class="titulo">Central de Treinamentos</h1>
+            <h2 class="subtitulo">Capacitação e desenvolvimento profissional</h2>
+        </div>
+        <a href="../Outros/Funcionalidades/treinamentos.html" class="btn-voltar">Voltar</a>
+    </header>
+
+    <div class="main-content">
+        <div class="breadcrumb">
+            <a href="./treinamentos.html">Treinamentos</a> > 
+            <span class="current">Portabilidade</span>
+        </div>
+
+        <div class="treinamento-container">
+            <div class="treinamento-header">
+                <div class="treinamento-info">
+                    <span class="categoria-tag">CAD</span>
+                    <span class="nivel-badge nivel-básico">Básico</span>
+                    <span class="duracao">2 horas</span>
+                </div>
+                <h1 class="treinamento-titulo">Portabilidade</h1>
+                <p class="treinamento-subtitulo">Como funciona a portabilidade de planos de previdência.</p>
+                <div class="autor-info">
+                    <img src="../../Arquivos/Imagens/logo.png" alt="Autor(es)" class="autor-foto">
+                    <div>
+                        <p class="autor-nome">POSTALIS</p>
+                        <p class="autor-cargo">Coodenação de Cadastro e Contribuição</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <img src="../Outros/Funcionalidades/Capas - Treinamentos/portabilidade.jpg" alt="Thumbnail do vídeo" class="video-thumb">
+                    <button class="play-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="64" height="64">
+                            <circle cx="12" cy="12" r="12" fill="rgba(0,0,0,0.5)"/>
+                            <path d="M16 12l-6 4V8l6 4z" fill="white"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="video-controls">
+                    <button class="control-button">Módulo anterior</button>
+                    <button class="control-button forward">Próximo módulo</button>
+                </div>
+            </div>
+
+            <div class="descricao-treinamento">
+                <h3 class="secao-titulo">Descrição do treinamento</h3>
+                <p>Este treinamento tem como objetivo capacitar os colaboradores sobre o processo de portabilidade de planos de previdência, abordando aspectos legais, operacionais e práticos. Ao final do curso, o participante estará apto a orientar clientes sobre como realizar a portabilidade entre planos, calcular valores envolvidos e entender todas as implicações financeiras e tributárias.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 POSTALIS - Instituto de Previdência Complementar
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const playButton = document.querySelector('.play-button');
+            
+            playButton.addEventListener('click', function() {
+                alert('Iniciando reprodução do vídeo...');
+                // Aqui entraria código para iniciar o vídeo real
+            });
+        });
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Central de Suporte</title>
+    <title>Dashboard</title>
     <link rel="icon" type="image/png" href="../../Arquivos/Imagens/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../CSS/user.dashboard.css">
@@ -17,20 +17,21 @@
     <!-- Header -->
     <header class="dashboard-header">
         <div class="header-content">
-            <div class="logo-container">
+            <div class="header-left">
                 <img src="../../Arquivos/Imagens/logo.png" alt="Logo Postalis" class="logo">
                 <div class="titulo-container">
-                    <h1 class="titulo">Dashboard - Central de Suporte<span class="versao-beta">teste // dashboard</span></h1>
+                    <h1 class="titulo">Dashboard<span class="versao-beta">- Versão de testes -</span></h1>
                     <h2 class="subtitulo" id="userType">####</h2>
                 </div>
             </div>
-            <div class="user-actions">
+            <div class="header-right">
                 <div class="user-info">
                     <i class="fas fa-user-circle"></i>
                     <span id="userName">Carregando...</span>
                 </div>
-                <button id="logoutBtn" class="logout-btn" title="Sair">
+                <button id="logoutBtn" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
                 </button>
             </div>
         </div>
@@ -42,11 +43,11 @@
         <section class="quick-access-section">
             <h2 class="section-title"><i class="fas fa-rocket"></i> Acesse as funcionalidades disponíveis</h2>
             <div class="quick-access-grid">
-                <a href="./notas-teste.html" class="quick-access-card">
+                <a href="./Funcionalidades/bloco.de.notas.html" class="quick-access-card">
                     <i class="fas fa-sticky-note"></i>
                     <span>Anotações</span>
                 </a>
-                <a href="./treinamentos.html" class="quick-access-card">
+                <a href="./Funcionalidades/treinamentos.html" class="quick-access-card">
                     <i class="fas fa-graduation-cap"></i>
                     <span>Treinamentos</span>
                 </a>
@@ -77,7 +78,9 @@
                     <div class="calendar-header">
                         <h3 id="currentMonth"></h3>
                     </div>
-                    <div id="calendar" class="calendar-grid"></div>
+                    <div class="calendar-container">
+                        <div id="calendar" class="calendar-grid"></div>
+                    </div>
                 </div>
             </div>
 
@@ -147,7 +150,7 @@
                 
                 // Atualizar subtítulo com o tipo de usuário
                 const userType = document.getElementById('userType');
-                userType.textContent = userData.type === USER_TYPES.ADMIN ? 'Tipo de usuário: administrador' : 'Tipo de usuário: comum';
+                userType.textContent = userData.type === USER_TYPES.ADMIN ? 'Classificação de usuário: administrador' : 'Classificação de usuário: comum';
                 
                 // Mostrar ou ocultar elementos com base no tipo de usuário
                 toggleAdminElements(userData.type === USER_TYPES.ADMIN);
@@ -311,13 +314,22 @@
             
             const monthKey = date.toISOString().slice(0, 7);
             const dateStr = date.toISOString().slice(0, 10);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
             
-            return events[monthKey]?.some(event => event.date === dateStr) || false;
+            const eventDate = new Date(date);
+            eventDate.setHours(0, 0, 0, 0);
+            
+            const hasEvent = events[monthKey]?.some(event => event.date === dateStr);
+            const isPastEvent = eventDate < today;
+            
+            return hasEvent ? { isPast: isPastEvent } : false;
         }
 
         // Atualizar lista de eventos
         function updateEventsList(events) {
             const now = new Date();
+            now.setHours(0, 0, 0, 0);
             const monthKey = now.toISOString().slice(0, 7);
             const monthEvents = events[monthKey] || [];
             const eventsListDiv = document.getElementById('eventsList');
@@ -331,14 +343,17 @@
                 .sort((a, b) => new Date(a.date) - new Date(b.date))
                 .map(event => {
                     const eventDate = new Date(event.date + 'T12:00:00Z');
+                    const isPastEvent = eventDate < now;
+                    
                     return `
-                        <div class="event-item ${event.type || 'default'}">
+                        <div class="event-item ${event.type || 'default'} ${isPastEvent ? 'past-event' : ''}">
                             <div class="event-date">
                                 ${eventDate.toLocaleDateString('pt-BR', { 
                                     day: '2-digit',
                                     month: 'short',
                                     timeZone: 'UTC'
                                 })}
+                                ${isPastEvent ? '<span class="event-status">(Finalizado)</span>' : ''}
                             </div>
                             <div class="event-title">${event.title}</div>
                             <div class="event-description">${event.description || ''}</div>
@@ -354,17 +369,20 @@
             const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
                                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
             
+            document.getElementById('currentMonth').innerHTML = `
+                <span style="color: #007bff">${monthNames[now.getMonth()]}</span> 
+                <span style="color: #6c757d">${now.getFullYear()}</span>
+            `;
+            
             // Get first and last day of current month
             const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
             const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
             
-            let calendarHTML = `
-                <div class="calendar-header">
-                    <h3>${monthNames[now.getMonth()]} ${now.getFullYear()}</h3>
-                </div>
-                <div class="calendar-grid">
-                    ${['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d => `<div class="weekday">${d}</div>`).join('')}
-            `;
+            // Criar cabeçalho dos dias da semana
+            let calendarHTML = '';
+            ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach(day => {
+                calendarHTML += `<div class="weekday">${day}</div>`;
+            });
 
             // Add empty cells for days before first day of month
             for (let i = 0; i < firstDay.getDay(); i++) {
@@ -375,17 +393,18 @@
             for (let day = 1; day <= lastDay.getDate(); day++) {
                 const currentDate = new Date(now.getFullYear(), now.getMonth(), day);
                 const isToday = currentDate.toDateString() === now.toDateString();
-                const hasEvent = checkForEvents(currentDate, events);
-
+                const eventCheck = checkForEvents(currentDate, events);
+                const hasEvent = eventCheck !== false;
+                
                 calendarHTML += `
-                    <div class="calendar-day ${isToday ? 'today' : ''} ${hasEvent ? 'has-event' : ''}">
-                        ${day}
-                        ${hasEvent ? '<i class="fas fa-star event-indicator"></i>' : ''}
+                    <div class="calendar-day ${isToday ? 'today' : ''} ${hasEvent ? 'has-event' : ''} ${eventCheck?.isPast ? 'past-event' : ''}">
+                        <span class="day-number">${day}</span>
+                        ${hasEvent ? `<i class="fas fa-${eventCheck.isPast ? 'check' : 'star'} event-indicator"></i>` : ''}
                     </div>
                 `;
             }
 
-            // Add empty cells for remaining days
+            // Add empty cells for remaining days to complete the grid
             const remainingDays = 7 - ((lastDay.getDate() + firstDay.getDay()) % 7);
             if (remainingDays < 7) {
                 for (let i = 0; i < remainingDays; i++) {
@@ -393,12 +412,65 @@
                 }
             }
 
-            calendarHTML += '</div>';
             calendarDiv.innerHTML = calendarHTML;
             
-            // Update events list
+            // Atualizar a lista de eventos para o mês atual
             updateEventsList(events);
         }
+
+// funcao de verificar usuário
+async function checkUserAuth() {
+    try {
+        // Verificar sessão
+        const userAuthString = sessionStorage.getItem('userAuth');
+        if (!userAuthString) {
+            window.location.href = './login-redesign.html';
+            return;
+        }
+
+        const userData = JSON.parse(userAuthString);
+        const now = new Date().getTime();
+        
+        // Verificar expiração
+        if (now > userData.timestamp + userData.expiresIn) {
+            sessionStorage.removeItem('userAuth');
+            window.location.href = './login-redesign.html';
+            return;
+        }
+
+        // Verificar tipo de usuário no Firestore
+        const userProfile = await db.collection('profiles').doc(userData.uid).get();
+        
+        if (userProfile.exists) {
+            const profileData = userProfile.data();
+            userData.type = profileData.user_type; // Atualizar tipo do usuário
+            
+            // Atualizar sessão com dados do Firestore
+            sessionStorage.setItem('userAuth', JSON.stringify({
+                ...userData,
+                type: profileData.user_type
+            }));
+            
+            // Atualizar interface
+            document.getElementById('userName').textContent = userData.nome || userData.email;
+            document.getElementById('userType').textContent = 
+                profileData.user_type === USER_TYPES.ADMIN ? 
+                'Classificação de usuário: administrador' : 
+                'Classificação de usuário: comum';
+            
+            // Mostrar/ocultar elementos administrativos
+            toggleAdminElements(profileData.user_type === USER_TYPES.ADMIN);
+            
+            return userData;
+        } else {
+            console.error('Perfil de usuário não encontrado');
+            window.location.href = './login-redesign.html';
+        }
+    } catch (error) {
+        console.error('Erro ao verificar autenticação:', error);
+        window.location.href = './login-redesign.html';
+    }
+}
 
         // Função de logout
         async function logout() {

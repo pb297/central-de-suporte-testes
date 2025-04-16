@@ -44,6 +44,9 @@
                 <label for="codigo">Senha</label>
                 <span class="input-icon">🔐</span>
                 <input type="password" id="codigo" class="login-input" placeholder="Sua senha de acesso" required>
+                <button type="button" class="toggle-password" aria-label="Mostrar senha">
+                    <i class="fas fa-eye"></i>
+                </button>
             </div>
             
             <button type="submit" class="login-btn">Acessar</button>
@@ -71,6 +74,9 @@
                 <label for="regSenha">Senha</label>
                 <span class="input-icon">🔐</span>
                 <input type="password" id="regSenha" class="login-input" placeholder="Mínimo 6 caracteres" required minlength="6">
+                <button type="button" class="toggle-password" aria-label="Mostrar senha">
+                    <i class="fas fa-eye"></i>
+                </button>
             </div>
             
             <button type="submit" class="login-btn">Registrar</button>
@@ -104,7 +110,7 @@
     </footer>
 
     <script>
-// Firebase configuration
+// config da firebase
 const firebaseConfig = {
     apiKey: "AIzaSyC3T1DP8L7Rs7167YEiKppY3zS0QhWKePg",
     authDomain: "central-de-suporte-4ceab.firebaseapp.com",
@@ -114,12 +120,12 @@ const firebaseConfig = {
     appId: "1:463050911746:web:d892319198cdd183c5b71b"
 };
 
-// Initialize Firebase
+// iniciar firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Admin configuration
+// config de adm
 const USER_TYPES = {
     ADMIN: 'admin',
     COMMON: 'common'
@@ -167,7 +173,6 @@ loginToggle.addEventListener('click', () => showForm('loginForm'));
 registerToggle.addEventListener('click', () => showForm('registerForm'));
 resetToggle.addEventListener('click', () => showForm('resetForm'));
 
-// Login form handler
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -187,7 +192,7 @@ loginForm.addEventListener('submit', async (e) => {
     showLoading(true);
     
     try {
-        // Login com Firebase
+
         const credential = await auth.signInWithEmailAndPassword(email, password);
         const user = credential.user;
         
@@ -364,7 +369,7 @@ function getErrorMessage(error) {
         'auth/invalid-credential': 'Credenciais inválidas',
         'auth/user-not-found': 'Usuário não encontrado',
         'auth/wrong-password': 'Senha incorreta',
-        'auth/email-already-in-use': 'Este e-mail já está em uso',
+        'auth/email-already-in-use': 'E-mail já cadastrado. Tente fazer login ou gerar uma nova senha',
         'auth/invalid-email': 'E-mail inválido',
         'auth/weak-password': 'A senha é muito fraca',
         'auth/too-many-requests': 'Foram realizadas muitas tentativas de login. Tente novamente mais tarde',
@@ -424,20 +429,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 showForm('loginForm');
             }
         } else {
-            // Show login form by default
+        
             showForm('loginForm');
         }
     });
 });
 
-// Function to logout (can be called from other pages)
 async function logout() {
     try {
         sessionStorage.removeItem('userAuth');
         await auth.signOut();
         window.location.href = './login-redesign.html';
     } catch (error) {
-        console.error('Logout error:', error);
+        console.error('erro ao realizar logout:', error);
     }
 }
     </script>
